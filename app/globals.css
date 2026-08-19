@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-barlow), system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), monospace;
+  --font-display: var(--font-barlow-condensed), sans-serif;
+  --color-background: #2a0f0f;
+  --color-foreground: #f5ebdd;
+  --color-brown: #2a0f0f;
+  --color-brown-light: #3b1815;
+  --color-cream: #f5ebdd;
+  --color-beige: #dccbb5;
+  --color-gold: #c9a227;
+  --color-gold-dark: #9b7512;
+  --color-card: #351514;
+  --color-border: #5b3227;
+  --radius: 0rem;
+}
+
+@layer base {
+  * { box-sizing: border-box; border-color: color-mix(in srgb, #c9a227 20%, transparent); }
+  html { background: #2a0f0f; color: #f5ebdd; scroll-behavior: smooth; }
+  body { background: #2a0f0f; color: #f5ebdd; font-family: var(--font-barlow), system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  ::selection { background: #c9a227; color: #2a0f0f; }
+}
+
+.section-shell { padding-block: clamp(5rem, 10vw, 10rem); }
+.eyebrow { font-family: var(--font-ibm-plex-mono), monospace; font-size: 10px; letter-spacing: .28em; text-transform: uppercase; }
+.hero-wash { background: linear-gradient(90deg, rgba(22,13,10,.92) 0%, rgba(42,15,15,.58) 55%, rgba(22,13,10,.38) 100%), linear-gradient(0deg, #2a0f0f 0%, transparent 40%); }
+.contact-image { background: linear-gradient(rgba(42,15,15,.5), rgba(42,15,15,.8)), url("/svv-vinayagar.png") center/cover; }
+.pattern { background-image: radial-gradient(rgba(201,162,39,.25) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(90deg, black, transparent 80%); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
