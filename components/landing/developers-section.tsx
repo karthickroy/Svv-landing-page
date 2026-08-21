@@ -7,13 +7,7 @@ const TABS = [
   {
     label: "INSTALL",
     code: `# npm
-npm install @jarvis/sdk
-
-# pnpm
-pnpm add @jarvis/sdk
-
-# yarn
-yarn add @jarvis/sdk`,
+npm install @jarvis/sdk`,
   },
   {
     label: "CREATE",
