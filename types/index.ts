@@ -1,3 +1,34 @@
+export interface YearCollection {
+  _id?: string
+  year: number
+  title?: string
+  description?: string
+  coverImageUrl?: string
+  imageCount?: number
+  videoCount?: number
+  totalCount?: number
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface MultiUploadQueueItem {
+  id: string
+  file: File
+  previewUrl: string
+  title: string
+  description: string
+  category: GalleryCategory
+  mediaType: MediaType
+  featured: boolean
+  status: 'idle' | 'uploading' | 'success' | 'error'
+  progress: number
+  errorMsg?: string
+}
+
+export interface BatchDeletePayload {
+  ids: string[]
+}
+
 // ─── Gallery Types ──────────────────────────────────────────────────────────
 
 export type MediaType = 'image' | 'video'
@@ -75,3 +106,4 @@ export interface UploadFormData {
 }
 
 export type EditFormData = Omit<UploadFormData, 'file' | 'mediaType'>
+

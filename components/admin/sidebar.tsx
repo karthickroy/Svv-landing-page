@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
+  CalendarRange,
   Images,
   Upload,
   Settings,
@@ -16,6 +17,7 @@ import {
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/collections', label: 'Collections', icon: CalendarRange },
   { href: '/admin/gallery', label: 'Gallery', icon: Images },
   { href: '/admin/gallery/upload', label: 'Upload Media', icon: Upload },
   { href: '/admin/settings', label: 'Settings', icon: Settings },

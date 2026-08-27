@@ -15,9 +15,10 @@ const YEARS = Array.from({ length: currentYear - 1998 }, (_, i) => currentYear -
 
 interface EditFormProps {
   item: GalleryItem
+  onSuccess?: () => void
 }
 
-export function EditForm({ item }: EditFormProps) {
+export function EditForm({ item, onSuccess }: EditFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [form, setForm] = useState({
@@ -49,8 +50,12 @@ export function EditForm({ item }: EditFormProps) {
         return
       }
       toast.success('Memory updated successfully')
-      router.push('/admin/gallery')
-      router.refresh()
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        router.push('/admin/gallery')
+        router.refresh()
+      }
     } catch {
       toast.error('Update failed. Please try again.')
     } finally {

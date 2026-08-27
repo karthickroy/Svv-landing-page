@@ -21,7 +21,7 @@ export default function SettingsPage() {
                 ['Celebration', 'Vinayagar Chathurthi'],
                 ['Founded', '1999'],
                 ['Years', '27+ years of celebrations'],
-                ['Location', 'Chennai, Tamil Nadu'],
+                ['Location', 'Pernambut, Tamil Nadu'],
               ].map(([label, value]) => (
                 <div key={label} className="flex gap-6">
                   <dt className="w-32 shrink-0 font-mono text-[10px] uppercase tracking-[.18em] text-beige/40">

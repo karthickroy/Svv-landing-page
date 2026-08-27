@@ -41,7 +41,7 @@ function GallerySkeleton() {
         <div
           key={i}
           className={`mb-5 break-inside-avoid animate-pulse bg-brown-light ${
-            i % 3 === 0 ? 'aspect-[4/5]' : i % 3 === 1 ? 'aspect-[5/4]' : 'aspect-[4/3]'
+            i % 3 === 0 ? 'aspect-[3/4]' : i % 3 === 1 ? 'aspect-[4/5]' : 'aspect-[2/3]'
           }`}
         />
       ))}
@@ -202,10 +202,10 @@ export function GallerySection() {
                     loading="lazy"
                     className={`w-full object-cover grayscale-[15%] transition duration-700 group-hover:scale-105 group-hover:grayscale-0 ${
                       i % 3 === 0
-                        ? 'aspect-[4/5]'
+                        ? 'aspect-[3/4]'
                         : i % 3 === 1
-                        ? 'aspect-[5/4]'
-                        : 'aspect-[4/3]'
+                        ? 'aspect-[4/5]'
+                        : 'aspect-[2/3]'
                     }`}
                   />
 

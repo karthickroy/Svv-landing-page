@@ -1,15 +1,21 @@
 import { NextResponse } from 'next/server'
 import { connectDB } from '@/lib/db'
 import Gallery from '@/models/Gallery'
+import Year from '@/models/Year'
 
 // ─── GET /api/gallery/years ──────────────────────────────────────────────────
-// Public — returns distinct years from gallery for dynamic filter tabs
+// Public — returns distinct sorted years from both Year model and Gallery items
 export async function GET() {
   try {
     await connectDB()
 
-    const years = await Gallery.distinct('year')
-    const sorted = years.sort((a: number, b: number) => b - a) // newest first
+    const [galleryYears, yearDocs] = await Promise.all([
+      Gallery.distinct('year'),
+      Year.distinct('year'),
+    ])
+
+    const yearSet = new Set<number>([...galleryYears, ...yearDocs])
+    const sorted = Array.from(yearSet).sort((a: number, b: number) => b - a)
 
     return NextResponse.json({
       success: true,
