@@ -29,4 +29,9 @@
 .hero-wash { background: linear-gradient(90deg, rgba(22,13,10,.92) 0%, rgba(42,15,15,.58) 55%, rgba(22,13,10,.38) 100%), linear-gradient(0deg, #2a0f0f 0%, transparent 40%); }
 .contact-image { background: linear-gradient(rgba(42,15,15,.5), rgba(42,15,15,.8)), url("/svv-vinayagar.png") center/cover; }
 .pattern { background-image: radial-gradient(rgba(201,162,39,.25) 1px, transparent 1px); background-size: 28px 28px; mask-image: linear-gradient(90deg, black, transparent 80%); }
+
+/* Hide scrollbar for clean modals */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

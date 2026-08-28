@@ -67,9 +67,6 @@ export function MembersTeaserSection() {
                   <span className="font-mono text-[9px] uppercase tracking-widest text-gold flex items-center gap-1 font-bold">
                     <Sparkles size={11} /> SVV Group Member
                   </span>
-                  <span className="font-mono text-[10px] text-beige/50">
-                    Since 1999
-                  </span>
                 </div>
 
                 <div className="mt-4 flex items-center gap-4">
@@ -88,10 +85,7 @@ export function MembersTeaserSection() {
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between border-t border-gold/10 pt-3 font-mono text-[10px] uppercase text-gold">
-                  <span className="flex items-center gap-1.5">
-                    <Award size={12} /> Member since 1999
-                  </span>
+                <div className="mt-4 flex items-center justify-end border-t border-gold/10 pt-3 font-mono text-[10px] uppercase text-gold">
                   <span className="flex items-center gap-0.5 text-gold opacity-0 group-hover:opacity-100 transition-opacity">
                     View Profile <ChevronRight size={12} />
                   </span>
@@ -181,11 +175,13 @@ export function MembersTeaserSection() {
                     SVV Group Member
                   </p>
 
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="border border-gold/30 bg-gold/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-gold">
-                      Member since 1999
-                    </span>
-                  </div>
+                  {selectedMember.badge ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="border border-gold/30 bg-gold/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-gold">
+                        {selectedMember.badge}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
               </div>
 

@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { Play, ImageIcon, Film } from 'lucide-react'
-import { AnimatePresence } from 'framer-motion'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { Play, ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Lightbox } from './lightbox'
 import type { GalleryItem } from '@/types'
+
+const ITEMS_PER_PAGE = 9
 
 // ─── Reveal animation wrapper (same as original svv-landing.tsx) ────────────
 function Reveal({
@@ -82,6 +82,7 @@ export function GallerySection() {
   const [items, setItems] = useState<GalleryItem[]>([])
   const [years, setYears] = useState<number[]>([])
   const [activeYear, setActiveYear] = useState<'all' | number>('all')
+  const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -100,9 +101,10 @@ export function GallerySection() {
   useEffect(() => {
     setIsLoading(true)
     setError(false)
+    setCurrentPage(1)
     const params = new URLSearchParams()
     if (activeYear !== 'all') params.set('year', String(activeYear))
-    params.set('limit', '50')
+    params.set('limit', '100')
 
     fetch(`/api/gallery?${params}`)
       .then((r) => r.json())
@@ -113,6 +115,10 @@ export function GallerySection() {
       .catch(() => setError(true))
       .finally(() => setIsLoading(false))
   }, [activeYear])
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const currentItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
   const openLightbox = (index: number) => setLightboxIndex(index)
   const closeLightbox = () => setLightboxIndex(null)
@@ -189,47 +195,107 @@ export function GallerySection() {
             </p>
           </div>
         ) : (
-          <div className="mt-16 columns-1 gap-5 sm:columns-2 lg:columns-3">
-            {items.map((item, i) => (
-              <Reveal key={item._id} delay={(i % 3) * 0.08} className="mb-5 break-inside-avoid">
-                <figure
-                  className="group relative cursor-pointer overflow-hidden"
-                  onClick={() => openLightbox(i)}
-                >
-                  <img
-                    src={item.thumbnailUrl || item.mediaUrl}
-                    alt={item.title}
-                    loading="lazy"
-                    className={`w-full object-cover grayscale-[15%] transition duration-700 group-hover:scale-105 group-hover:grayscale-0 ${
-                      i % 3 === 0
-                        ? 'aspect-[3/4]'
-                        : i % 3 === 1
-                        ? 'aspect-[4/5]'
-                        : 'aspect-[2/3]'
-                    }`}
-                  />
+          <>
+            <div className="mt-16 columns-1 gap-5 sm:columns-2 lg:columns-3">
+              {currentItems.map((item, i) => {
+                const globalIndex = startIndex + i
+                return (
+                  <Reveal key={item._id} delay={(i % 3) * 0.08} className="mb-5 break-inside-avoid">
+                    <figure
+                      className="group relative cursor-pointer overflow-hidden"
+                      onClick={() => openLightbox(globalIndex)}
+                    >
+                      <img
+                        src={item.thumbnailUrl || item.mediaUrl}
+                        alt={item.title}
+                        loading="lazy"
+                        className={`w-full object-cover grayscale-[15%] transition duration-700 group-hover:scale-105 group-hover:grayscale-0 ${
+                          i % 3 === 0
+                            ? 'aspect-[3/4]'
+                            : i % 3 === 1
+                            ? 'aspect-[4/5]'
+                            : 'aspect-[2/3]'
+                        }`}
+                      />
 
-                  {/* Video play icon */}
-                  {item.mediaType === 'video' && (
-                    <div className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center bg-brown/80">
-                      <Play size={14} className="text-gold" fill="currentColor" />
-                    </div>
-                  )}
+                      {/* Video play icon */}
+                      {item.mediaType === 'video' && (
+                        <div className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center bg-brown/80">
+                          <Play size={14} className="text-gold" fill="currentColor" />
+                        </div>
+                      )}
 
-                  {/* Hover caption */}
-                  <figcaption className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-brown/90 to-transparent px-5 pb-5 pt-16 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <span className="font-mono text-[10px] tracking-[.2em] text-gold">
-                      {item.year}
-                    </span>
-                    <p className="mt-1 font-display text-xl uppercase">{item.title}</p>
-                    {item.description && (
-                      <p className="mt-1 line-clamp-2 text-xs text-beige/70">{item.description}</p>
-                    )}
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
+                      {/* Hover caption */}
+                      <figcaption className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-brown/90 to-transparent px-5 pb-5 pt-16 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                        <span className="font-mono text-[10px] tracking-[.2em] text-gold">
+                          {item.year}
+                        </span>
+                        <p className="mt-1 font-display text-xl uppercase">{item.title}</p>
+                        {item.description && (
+                          <p className="mt-1 line-clamp-2 text-xs text-beige/70">{item.description}</p>
+                        )}
+                      </figcaption>
+                    </figure>
+                  </Reveal>
+                )
+              })}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gold/15 pt-8 sm:flex-row">
+                <p className="font-mono text-xs uppercase tracking-widest text-beige/60">
+                  Showing <span className="font-bold text-gold">{startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, items.length)}</span> of <span className="font-bold text-cream">{items.length}</span> memories
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setCurrentPage((p) => Math.max(p - 1, 1))
+                      document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-1 border border-gold/30 bg-brown-light/40 px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream transition-colors hover:border-gold hover:bg-gold hover:text-brown disabled:opacity-40 disabled:hover:border-gold/30 disabled:hover:bg-brown-light/40 disabled:hover:text-cream"
+                  >
+                    <ChevronLeft size={14} /> Prev
+                  </button>
+
+                  <div className="flex flex-wrap items-center gap-1.5 px-2">
+                    {Array.from({ length: totalPages }).map((_, idx) => {
+                      const pageNum = idx + 1
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => {
+                            setCurrentPage(pageNum)
+                            document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
+                          }}
+                          className={`h-8 w-8 font-mono text-xs transition-colors ${
+                            currentPage === pageNum
+                              ? 'border border-gold bg-gold font-bold text-brown'
+                              : 'border border-gold/20 bg-brown-light/40 text-beige/70 hover:border-gold/60 hover:text-cream'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setCurrentPage((p) => Math.min(p + 1, totalPages))
+                      document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-1 border border-gold/30 bg-brown-light/40 px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream transition-colors hover:border-gold hover:bg-gold hover:text-brown disabled:opacity-40 disabled:hover:border-gold/30 disabled:hover:bg-brown-light/40 disabled:hover:text-cream"
+                  >
+                    Next <ChevronRight size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 

@@ -8,6 +8,8 @@ import { GallerySection } from "@/components/gallery/gallery-section"
 import { MembersTeaserSection } from "@/components/landing/members-teaser-section"
 import Link from "next/link"
 
+import { NoticeModal } from "@/components/landing/notice-modal"
+
 // Gallery data is now fetched dynamically from MongoDB via /api/gallery
 // Use the Admin Dashboard at /admin to upload images and videos
 
@@ -17,12 +19,38 @@ function Reveal({ children, delay = 0, className = "" }: { children: React.React
   return <motion.div ref={ref} className={className} initial={{ opacity: 0, y: 28 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: .8, delay, ease: [.22, 1, .36, 1] }}>{children}</motion.div>
 }
 
-function SmoothScroll() {
-  useEffect(() => { const lenis = new Lenis({ lerp: .08 }); let frame = 0; const raf = (time: number) => { lenis.raf(time); frame = requestAnimationFrame(raf) }; frame = requestAnimationFrame(raf); return () => { cancelAnimationFrame(frame); lenis.destroy() } }, [])
+function SmoothScroll({ isNoticeOpen }: { isNoticeOpen: boolean }) {
+  const lenisRef = useRef<Lenis | null>(null)
+
+  useEffect(() => {
+    const lenis = new Lenis({ lerp: .08 })
+    lenisRef.current = lenis
+    let frame = 0
+    const raf = (time: number) => {
+      lenis.raf(time)
+      frame = requestAnimationFrame(raf)
+    }
+    frame = requestAnimationFrame(raf)
+    return () => {
+      cancelAnimationFrame(frame)
+      lenis.destroy()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (lenisRef.current) {
+      if (isNoticeOpen) {
+        lenisRef.current.stop()
+      } else {
+        lenisRef.current.start()
+      }
+    }
+  }, [isNoticeOpen])
+
   return null
 }
 
-function Navigation() {
+function Navigation({ onOpenNotice }: { onOpenNotice: () => void }) {
   const [open, setOpen] = useState(false); const [scrolled, setScrolled] = useState(false)
   useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 40); window.addEventListener("scroll", onScroll); return () => window.removeEventListener("scroll", onScroll) }, [])
   const links = [
@@ -39,30 +67,49 @@ function Navigation() {
         <img src="/svv-logo.png" alt="SVV Logo" className="h-9 w-9 rounded-full border border-gold/40 object-cover p-0.5 bg-cream/10 transition-transform group-hover:scale-105" />
         <span>SVV<span className="text-gold">.</span></span>
       </a>
-      <div className="hidden items-center gap-8 md:flex">{links.map((link) => (
-        link.href.startsWith("/") ? (
-          <Link key={link.name} href={link.href} className="group relative font-mono text-[10px] uppercase tracking-[.2em] text-gold font-bold transition-colors hover:text-cream">
-            {link.name}<span className="absolute -bottom-2 left-0 h-px w-full bg-gold" />
-          </Link>
-        ) : (
-          <a key={link.name} href={link.href} className="group relative font-mono text-[10px] uppercase tracking-[.2em] text-beige/70 transition-colors hover:text-gold">
-            {link.name}<span className="absolute -bottom-2 left-0 h-px w-0 bg-gold transition-all group-hover:w-full" />
-          </a>
-        )
-      ))}</div>
+      <div className="hidden items-center gap-6 md:flex">
+        {links.map((link) => (
+          link.href.startsWith("/") ? (
+            <Link key={link.name} href={link.href} className="group relative font-mono text-[10px] uppercase tracking-[.2em] text-gold font-bold transition-colors hover:text-cream">
+              {link.name}<span className="absolute -bottom-2 left-0 h-px w-full bg-gold" />
+            </Link>
+          ) : (
+            <a key={link.name} href={link.href} className="group relative font-mono text-[10px] uppercase tracking-[.2em] text-beige/70 transition-colors hover:text-gold">
+              {link.name}<span className="absolute -bottom-2 left-0 h-px w-0 bg-gold transition-all group-hover:w-full" />
+            </a>
+          )
+        ))}
+        <button
+          type="button"
+          onClick={onOpenNotice}
+          className="cursor-pointer flex items-center gap-1.5 rounded border border-gold/60 bg-gold/15 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[.18em] text-gold font-bold transition-all hover:bg-gold hover:text-brown shadow-sm hover:scale-105"
+        >
+          <Sparkles size={12} className="animate-pulse text-gold cursor-pointer" />
+          <span>SVV 2026 Notice</span>
+        </button>
+      </div>
       <button onClick={() => setOpen(!open)} className="text-cream md:hidden" aria-label={open ? "Close menu" : "Open menu"}>{open ? <X size={22} /> : <Menu size={22} />}</button>
     </nav>
-    {open && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="border-t border-gold/15 bg-brown px-6 py-5 md:hidden">{links.map(link => (
-      link.href.startsWith("/") ? (
-        <Link onClick={() => setOpen(false)} key={link.name} href={link.href} className="block border-b border-gold/10 py-4 font-mono text-xs uppercase tracking-[.2em] text-gold font-bold">{link.name}</Link>
-      ) : (
-        <a onClick={() => setOpen(false)} key={link.name} href={link.href} className="block border-b border-gold/10 py-4 font-mono text-xs uppercase tracking-[.2em] text-beige">{link.name}</a>
-      )
-    ))}</motion.div>}
+    {open && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="border-t border-gold/15 bg-brown px-6 py-5 md:hidden space-y-2">
+      {links.map(link => (
+        link.href.startsWith("/") ? (
+          <Link onClick={() => setOpen(false)} key={link.name} href={link.href} className="block border-b border-gold/10 py-3 font-mono text-xs uppercase tracking-[.2em] text-gold font-bold">{link.name}</Link>
+        ) : (
+          <a onClick={() => setOpen(false)} key={link.name} href={link.href} className="block border-b border-gold/10 py-3 font-mono text-xs uppercase tracking-[.2em] text-beige">{link.name}</a>
+        )
+      ))}
+      <button
+        type="button"
+        onClick={() => { setOpen(false); onOpenNotice(); }}
+        className="w-full flex items-center justify-center gap-2 rounded border border-gold bg-gold/20 py-3 font-mono text-xs uppercase tracking-[.2em] text-gold font-bold hover:bg-gold hover:text-brown"
+      >
+        <Sparkles size={14} /> SVV 2026 Notice
+      </button>
+    </motion.div>}
   </motion.header>
 }
 
-function Hero() {
+function Hero({ onOpenNotice }: { onOpenNotice: () => void }) {
   const { scrollY } = useScroll(); const y = useTransform(scrollY, [0, 800], [0, 180]); const opacity = useTransform(scrollY, [0, 500], [1, 0]);
   return <section id="home" className="relative flex min-h-screen items-end overflow-hidden bg-brown pb-20 pt-32 lg:pb-28">
     <motion.img style={{ y }} src="/svv-vinayagar.png" alt="Lord Vinayagar idol during celebration" className="absolute inset-0 h-full w-full object-cover object-center opacity-55" />
@@ -70,7 +117,25 @@ function Hero() {
     <motion.div style={{ opacity }} className="relative mx-auto w-full max-w-7xl px-6 lg:px-10">
       <div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[.28em] text-gold"><span className="h-px w-10 bg-gold" /> A living tradition since 1999</div>
       <h1 className="max-w-5xl font-display text-[clamp(4rem,11vw,10rem)] font-bold uppercase leading-[.8] tracking-[-.04em] text-cream">Sree Veera<br /><span className="ml-[8vw] text-gold">Vigneshwar</span></h1>
-      <div className="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between"><div><p className="font-mono text-xs uppercase tracking-[.32em] text-beige/80">27 years of blessings</p><p className="mt-3 max-w-sm text-pretty text-lg leading-relaxed text-cream/75">Celebrating faith, tradition &amp; togetherness.</p></div><a href="#gallery" className="group flex w-fit items-center gap-4 border border-gold/70 px-6 py-4 font-mono text-[10px] uppercase tracking-[.2em] text-cream transition-colors hover:bg-gold hover:text-brown">Explore gallery <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></a></div>
+      <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[.32em] text-beige/80">27 years of blessings</p>
+          <p className="mt-3 max-w-sm text-pretty text-lg leading-relaxed text-cream/75">Celebrating faith, tradition &amp; togetherness.</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            onClick={onOpenNotice}
+            className="cursor-pointer group flex w-fit items-center gap-3 border border-gold bg-gold px-6 py-4 font-mono text-[10px] uppercase tracking-[.2em] text-brown font-bold transition-transform hover:-translate-y-1 shadow-lg"
+          >
+            <span>SVV 2026 Notice</span>
+            <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+          </button>
+          <a href="#gallery" className="group flex w-fit items-center gap-4 border border-gold/70 px-6 py-4 font-mono text-[10px] uppercase tracking-[.2em] text-cream transition-colors hover:bg-gold/20 hover:border-gold">
+            Explore gallery <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+          </a>
+        </div>
+      </div>
       <div className="mt-16 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[.2em] text-beige/50"><ArrowDown size={13} className="animate-bounce" /> Scroll to remember</div>
     </motion.div>
   </section>
@@ -92,4 +157,24 @@ function Contact() {
 
 function Footer() { return <footer className="border-t border-gold/15 bg-brown px-6 py-10 text-cream lg:px-10"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-8 md:flex-row md:items-end"><div className="flex items-center gap-3.5"><img src="/svv-logo.png" alt="SVV Logo" className="h-11 w-11 rounded-full border border-gold/40 object-cover p-0.5 bg-cream/10" /><div><div className="font-display text-3xl tracking-[.18em]">SVV<span className="text-gold">.</span></div><p className="mt-1 font-mono text-[10px] uppercase tracking-[.18em] text-beige/55">Sree Veera Vigneshwar · 27 years of blessings</p></div></div><div className="flex items-center gap-5 text-beige/60"><a href="https://www.instagram.com/sree_veera_vighneshwar?igsi=YWwzMGhjMXZ3a203" target="_blank" rel="noopener noreferrer" aria-label="Svv Instagram" className="hover:text-gold"><Instagram size={18} /></a><a href="#home" aria-label="Facebook" className="hover:text-gold"><Facebook size={18} /></a><a href="#home" aria-label="Email" className="hover:text-gold"><Mail size={18} /></a></div></div><div className="mx-auto mt-10 flex max-w-7xl justify-between border-t border-gold/10 pt-5 font-mono text-[9px] uppercase tracking-[.15em] text-beige/40"><span>© 2026 Sree Veera Vigneshwar</span><span>Faith · Tradition · Togetherness</span></div></footer> }
 
-export function SvvLanding() { return <><SmoothScroll /><Navigation /><main><Hero /><About /><Services /><GallerySection /><MembersTeaserSection /><Journey /><Contact /></main><Footer /></> }
+export function SvvLanding() {
+  const [isNoticeOpen, setIsNoticeOpen] = useState(false)
+
+  return (
+    <>
+      <SmoothScroll isNoticeOpen={isNoticeOpen} />
+      <Navigation onOpenNotice={() => setIsNoticeOpen(true)} />
+      <main>
+        <Hero onOpenNotice={() => setIsNoticeOpen(true)} />
+        <About />
+        <Services />
+        <GallerySection />
+        <MembersTeaserSection />
+        <Journey />
+        <Contact />
+      </main>
+      <Footer />
+      <NoticeModal isOpen={isNoticeOpen} onClose={() => setIsNoticeOpen(false)} />
+    </>
+  )
+}

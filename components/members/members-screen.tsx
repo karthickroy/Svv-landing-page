@@ -38,10 +38,10 @@ export function MembersScreen() {
             data.data.map((m: any, idx: number) => ({
               id: m._id || `mem-${idx}`,
               name: m.name,
-              role: "SVV Group Member",
-              category: "SVV Group Member",
-              joinedYear: 1999,
-              badge: "Member since 1999",
+              role: m.role || "SVV Group Member",
+              category: m.category || "SVV Group Member",
+              joinedYear: m.joinedYear || 1999,
+              badge: m.badge || "",
               avatarColor: m.avatarColor || "from-amber-600 to-yellow-500",
               order: m.order ?? idx,
             }))
@@ -299,9 +299,6 @@ export function MembersScreen() {
                       <span className="font-mono text-[9px] uppercase tracking-widest text-gold font-bold flex items-center gap-1">
                         <Sparkles size={11} /> SVV Group Member
                       </span>
-                      <span className="font-mono text-[10px] text-beige/60 font-semibold">
-                        Since 1999
-                      </span>
                     </div>
 
                     {/* Member Profile Avatar & Name */}
@@ -323,10 +320,7 @@ export function MembersScreen() {
                     </div>
 
                     {/* Footer Pill */}
-                    <div className="mt-6 border-t border-gold/10 pt-4 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-gold">
-                        <Award size={12} /> Member since 1999
-                      </span>
+                    <div className="mt-6 border-t border-gold/10 pt-4 flex items-center justify-end">
                       <span className="flex items-center gap-0.5 text-gold text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity">
                         View Profile <ChevronRight size={12} />
                       </span>
@@ -375,9 +369,6 @@ export function MembersScreen() {
                   </div>
 
                   <div className="flex items-center gap-4 font-mono text-xs">
-                    <span className="border border-gold/30 bg-gold/10 px-3 py-1 text-[10px] uppercase text-gold font-bold">
-                      Member since 1999
-                    </span>
                     <ChevronRight size={16} className="text-gold" />
                   </div>
                 </div>
@@ -442,11 +433,13 @@ export function MembersScreen() {
                     SVV Group Member
                   </p>
 
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="border border-gold/30 bg-gold/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-gold">
-                      Member since 1999
-                    </span>
-                  </div>
+                  {selectedMember.badge ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="border border-gold/30 bg-gold/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-gold">
+                        {selectedMember.badge}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
               </div>
 

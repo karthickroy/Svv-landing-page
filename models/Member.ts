@@ -38,7 +38,7 @@ const MemberSchema = new Schema<IMember>(
     },
     badge: {
       type: String,
-      default: 'Member since 1999',
+      default: '',
       trim: true,
     },
     phone: {

@@ -26,7 +26,7 @@ async function seedMembers() {
     role: "SVV Group Member",
     category: "SVV Group Member",
     joinedYear: 1999,
-    badge: "Member since 1999",
+    badge: "",
     avatarColor: m.avatarColor,
     order: idx,
   }))
