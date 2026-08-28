@@ -85,7 +85,7 @@ export function NoticeModal({ isOpen, onClose }: NoticeModalProps) {
                 <span className="text-gold">Grand Festival Notice 2026</span>
               </h2>
               <p className="mt-2 text-xs sm:text-sm leading-relaxed text-beige/75">
-                Organized by Sree Veera Vigneshwar Youth &amp; Devotees, Kengaiyamman Temple Street, Pernambut.
+                Organized by Sree Veera Vigneshwar Youth &amp; Devotees, Gangai Amman Temple, Pernambut.
               </p>
             </div>
 
