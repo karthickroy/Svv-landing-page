@@ -20,6 +20,21 @@ export async function POST(request: Request) {
 
     await connectDB()
 
+    // Auto-seed admin if no admin account exists in MongoDB yet
+    const adminCount = await Admin.countDocuments()
+    if (adminCount === 0) {
+      const defaultEmail = (process.env.ADMIN_EMAIL || 'admin@svv.org').toLowerCase()
+      const defaultPassword = process.env.ADMIN_PASSWORD || 'admin@123'
+      const passwordHash = await bcrypt.hash(defaultPassword, 12)
+
+      await Admin.create({
+        email: defaultEmail,
+        passwordHash,
+        role: 'admin',
+      })
+      console.log(`[AUTO-SEED] Created initial admin user: ${defaultEmail}`)
+    }
+
     // Find admin and include passwordHash (excluded by default)
     const admin = await Admin.findOne({ email: email.toLowerCase() }).select('+passwordHash')
 

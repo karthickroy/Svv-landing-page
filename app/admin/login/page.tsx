@@ -54,6 +54,7 @@ export default function AdminLoginPage() {
         <div className="border border-gold/25 bg-brown-light p-10">
           {/* Logo */}
           <div className="mb-10 text-center">
+            <img src="/svv-logo.png" alt="SVV Logo" className="mx-auto mb-4 h-16 w-16 rounded-full border-2 border-gold/40 object-cover p-1 bg-cream/10 shadow-lg" />
             <div className="font-display text-5xl tracking-[.18em] text-cream">
               SVV<span className="text-gold">.</span>
             </div>

@@ -26,6 +26,14 @@ export const metadata: Metadata = {
   title: 'Sree Veera Vigneshwar — 27 Years of Blessings',
   description: 'Celebrating 27 years of Vinayagar Chathurthi through faith, tradition, memories and togetherness.',
   keywords: ['Sree Veera Vigneshwar', 'Vinayagar Chathurthi', 'SVV', 'Tamil tradition', 'celebration'],
+  icons: {
+    icon: [
+      { url: '/svv-logo.png' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    shortcut: '/svv-logo.png',
+    apple: '/apple-icon.png',
+  },
 }
 
 export const viewport: Viewport = {

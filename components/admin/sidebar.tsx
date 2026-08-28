@@ -72,13 +72,16 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
     <div className="flex h-full flex-col border-r border-gold/15 bg-brown">
       {/* Logo */}
       <div className="flex items-center justify-between border-b border-gold/15 px-6 py-6">
-        <div>
-          <div className="font-display text-2xl tracking-[.18em] text-cream">
-            SVV<span className="text-gold">.</span>
+        <div className="flex items-center gap-3">
+          <img src="/svv-logo.png" alt="SVV Logo" className="h-9 w-9 rounded-full border border-gold/40 object-cover p-0.5 bg-cream/10" />
+          <div>
+            <div className="font-display text-2xl tracking-[.18em] text-cream">
+              SVV<span className="text-gold">.</span>
+            </div>
+            <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[.2em] text-beige/40">
+              Admin Portal
+            </p>
           </div>
-          <p className="mt-1 font-mono text-[9px] uppercase tracking-[.2em] text-beige/40">
-            Admin Portal
-          </p>
         </div>
         {onClose && (
           <button onClick={onClose} className="text-beige/50 hover:text-cream lg:hidden">

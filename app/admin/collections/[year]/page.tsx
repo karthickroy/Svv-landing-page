@@ -160,16 +160,16 @@ export default function YearCollectionDetailPage({
         title={`Year ${yearNum} Collection`}
         description={collection?.title || `Management portal for Year ${yearNum}`}
         action={
-          <div className="flex gap-3">
+          <div className="flex flex-wrap sm:flex-nowrap gap-2.5 sm:gap-3 w-full sm:w-auto">
             <Link
               href="/admin/collections"
-              className="flex items-center gap-2 border border-gold/30 px-4 py-2.5 font-mono text-[10px] uppercase tracking-[.2em] text-cream hover:bg-brown-light"
+              className="flex-1 sm:flex-none justify-center flex items-center gap-2 border border-gold/30 px-3.5 sm:px-4 py-2.5 font-mono text-[10px] uppercase tracking-[.15em] sm:tracking-[.2em] text-cream hover:bg-brown-light"
             >
               <ArrowLeft size={14} /> Back to Collections
             </Link>
             <button
               onClick={() => setActiveTab('add')}
-              className="flex items-center gap-2 bg-gold px-5 py-2.5 font-mono text-[10px] uppercase tracking-[.2em] text-brown hover:bg-gold-dark"
+              className="flex-1 sm:flex-none justify-center flex items-center gap-2 bg-gold px-4 sm:px-5 py-2.5 font-mono text-[10px] uppercase tracking-[.15em] sm:tracking-[.2em] text-brown hover:bg-gold-dark"
             >
               <Plus size={14} /> Add Media
             </button>
@@ -177,45 +177,45 @@ export default function YearCollectionDetailPage({
         }
       />
 
-      <div className="px-6 py-8 lg:px-10">
+      <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
         {/* Collection stats summary */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border border-gold/20 bg-brown-light p-6">
+        <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-gold/20 bg-brown-light p-4 sm:p-6">
           <div>
             <span className="font-mono text-[10px] uppercase tracking-[.2em] text-gold">
               Collection Overview
             </span>
-            <h2 className="font-display text-3xl uppercase text-cream mt-1">
+            <h2 className="font-display text-2xl sm:text-3xl uppercase text-cream mt-1">
               {collection?.title || `Celebration ${yearNum}`}
             </h2>
             {collection?.description && (
-              <p className="mt-1 text-sm text-beige/70">{collection.description}</p>
+              <p className="mt-1 text-xs sm:text-sm text-beige/70">{collection.description}</p>
             )}
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 border-t sm:border-t-0 border-gold/15 pt-4 sm:pt-0">
             <div className="text-center">
-              <span className="block font-display text-3xl text-gold">
+              <span className="block font-display text-2xl sm:text-3xl text-gold">
                 {collection?.imageCount || 0}
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-[.15em] text-beige/50">
+              <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[.15em] text-beige/50">
                 Images
               </span>
             </div>
-            <div className="h-10 w-px bg-gold/20" />
+            <div className="h-8 sm:h-10 w-px bg-gold/20" />
             <div className="text-center">
-              <span className="block font-display text-3xl text-gold">
+              <span className="block font-display text-2xl sm:text-3xl text-gold">
                 {collection?.videoCount || 0}
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-[.15em] text-beige/50">
+              <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[.15em] text-beige/50">
                 Videos
               </span>
             </div>
-            <div className="h-10 w-px bg-gold/20" />
+            <div className="h-8 sm:h-10 w-px bg-gold/20" />
             <div className="text-center">
-              <span className="block font-display text-3xl text-cream">
+              <span className="block font-display text-2xl sm:text-3xl text-cream">
                 {collection?.totalCount || 0}
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-[.15em] text-beige/50">
+              <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[.15em] text-beige/50">
                 Total Assets
               </span>
             </div>
@@ -223,8 +223,8 @@ export default function YearCollectionDetailPage({
         </div>
 
         {/* Tab navigation */}
-        <div className="mb-6 flex flex-wrap items-center justify-between border-b border-gold/20 pb-4">
-          <div className="flex gap-4">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-gold/20 pb-4">
+          <div className="flex flex-wrap gap-2.5 sm:gap-4">
             <button
               onClick={() => {
                 setActiveTab('images')

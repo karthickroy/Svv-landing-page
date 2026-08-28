@@ -157,7 +157,7 @@ export default function CollectionsPage() {
         title="Year Collections"
         description="Organize and manage year-wise digital image & video archives."
         action={
-          <div className="flex gap-3">
+          <div className="flex flex-wrap sm:flex-nowrap gap-2.5 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={() => {
                 setFormYear(String(new Date().getFullYear()))
@@ -165,14 +165,14 @@ export default function CollectionsPage() {
                 setFormDescription('')
                 setShowAddModal(true)
               }}
-              className="flex items-center gap-2 bg-gold px-5 py-3 font-mono text-[10px] uppercase tracking-[.2em] text-brown hover:bg-gold-dark"
+              className="flex-1 sm:flex-none justify-center flex items-center gap-2 bg-gold px-4 sm:px-5 py-2.5 sm:py-3 font-mono text-[10px] uppercase tracking-[.15em] sm:tracking-[.2em] text-brown hover:bg-gold-dark"
             >
               <Plus size={14} />
               Add New Year
             </button>
             <Link
               href="/admin/gallery/upload"
-              className="flex items-center gap-2 border border-gold/30 px-5 py-3 font-mono text-[10px] uppercase tracking-[.2em] text-gold hover:bg-brown-light"
+              className="flex-1 sm:flex-none justify-center flex items-center gap-2 border border-gold/30 px-4 sm:px-5 py-2.5 sm:py-3 font-mono text-[10px] uppercase tracking-[.15em] sm:tracking-[.2em] text-gold hover:bg-brown-light"
             >
               <Upload size={14} />
               Upload Media
@@ -181,32 +181,32 @@ export default function CollectionsPage() {
         }
       />
 
-      <div className="px-6 py-8 lg:px-10">
+      <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
         {isLoading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="h-64 animate-pulse bg-brown-light" />
             ))}
           </div>
         ) : collections.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 border border-gold/15 bg-brown-light text-center">
+          <div className="flex flex-col items-center justify-center py-16 sm:py-20 border border-gold/15 bg-brown-light text-center px-4">
             <CalendarRange size={44} className="text-gold/30" />
-            <p className="mt-5 font-display text-2xl uppercase text-cream/50">
+            <p className="mt-5 font-display text-xl sm:text-2xl uppercase text-cream/50">
               No Collections Found
             </p>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[.18em] text-beige/35">
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-[.15em] sm:tracking-[.18em] text-beige/35 max-w-sm">
               Create your first year collection to start grouping memories
             </p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="mt-6 inline-flex items-center gap-2 bg-gold px-6 py-3 font-mono text-[10px] uppercase tracking-[.2em] text-brown hover:bg-gold-dark"
+              className="mt-6 inline-flex items-center gap-2 bg-gold px-5 sm:px-6 py-3 font-mono text-[10px] uppercase tracking-[.15em] sm:tracking-[.2em] text-brown hover:bg-gold-dark"
             >
               <Plus size={14} />
               Add New Year Collection
             </button>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {collections.map((col) => (
               <div
                 key={col.year}
@@ -239,7 +239,7 @@ export default function CollectionsPage() {
                   </div>
 
                   {/* Quick Edit/Delete Header Buttons */}
-                  <div className="absolute right-3 top-3 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="absolute right-3 top-3 flex gap-1 sm:opacity-0 transition-opacity sm:group-hover:opacity-100">
                     <button
                       onClick={() => {
                         setEditingYear(col)
@@ -283,7 +283,7 @@ export default function CollectionsPage() {
                 <div className="border-t border-gold/15 bg-brown/40">
                   <Link
                     href={`/admin/collections/${col.year}`}
-                    className="flex items-center justify-center gap-2 px-4 py-3 font-mono text-[10px] uppercase tracking-[.2em] text-gold hover:bg-gold hover:text-brown transition-colors"
+                    className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 font-mono text-[9px] sm:text-[10px] uppercase tracking-[.12em] sm:tracking-[.2em] text-gold hover:bg-gold hover:text-brown transition-colors text-center"
                   >
                     Manage Year {col.year} Collection →
                   </Link>
