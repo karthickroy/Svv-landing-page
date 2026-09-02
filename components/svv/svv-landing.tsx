@@ -109,7 +109,7 @@ function Navigation({ onOpenNotice }: { onOpenNotice: () => void }) {
   </motion.header>
 }
 
-function Hero({ onOpenNotice }: { onOpenNotice: () => void }) {
+function Hero() {
   const { scrollY } = useScroll(); const y = useTransform(scrollY, [0, 800], [0, 180]); const opacity = useTransform(scrollY, [0, 500], [1, 0]);
   return <section id="home" className="relative flex min-h-screen items-end overflow-hidden bg-brown pb-20 pt-32 lg:pb-28">
     <motion.img style={{ y }} src="/svv-vinayagar.png" alt="Lord Vinayagar idol during celebration" className="absolute inset-0 h-full w-full object-cover object-center opacity-55" />
@@ -123,16 +123,12 @@ function Hero({ onOpenNotice }: { onOpenNotice: () => void }) {
           <p className="mt-3 max-w-sm text-pretty text-lg leading-relaxed text-cream/75">Celebrating faith, tradition &amp; togetherness.</p>
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <button
-            type="button"
-            onClick={onOpenNotice}
+          <a
+            href="#gallery"
             className="cursor-pointer group flex w-fit items-center gap-3 border border-gold bg-gold px-6 py-4 font-mono text-[10px] uppercase tracking-[.2em] text-brown font-bold transition-transform hover:-translate-y-1 shadow-lg"
           >
-            <span>SVV 2026 Notice</span>
+            <span>Explore gallery</span>
             <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-          </button>
-          <a href="#gallery" className="group flex w-fit items-center gap-4 border border-gold/70 px-6 py-4 font-mono text-[10px] uppercase tracking-[.2em] text-cream transition-colors hover:bg-gold/20 hover:border-gold">
-            Explore gallery <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
           </a>
         </div>
       </div>
@@ -141,7 +137,49 @@ function Hero({ onOpenNotice }: { onOpenNotice: () => void }) {
   </section>
 }
 
-function About() { return <section id="about" className="section-shell bg-cream text-brown"><div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:px-10"><Reveal className="relative"><div className="absolute -bottom-4 -right-4 h-full w-full border border-gold/60" /><img src="/svv-vinayagar.png" alt="A devotional celebration gathering" className="relative aspect-[4/5] w-full object-cover grayscale-[20%]" /></Reveal><Reveal delay={.15}><p className="eyebrow text-gold-dark">Our story</p><h2 className="mt-5 max-w-xl font-display text-5xl uppercase leading-[.92] tracking-tight lg:text-7xl">27 years of faith, tradition &amp; memories</h2><div className="my-8 h-px w-20 bg-gold" /><p className="max-w-lg text-lg leading-relaxed text-brown/70">Sree Veera Vigneshwar has been a place where devotion becomes memory. For 27 years, our Vinayagar Chathurthi celebrations have brought families, friends and generations together in faith, joy and togetherness.</p><div className="mt-10 flex items-center gap-4"><span className="font-display text-5xl text-gold-dark">27+</span><span className="font-mono text-[10px] uppercase leading-loose tracking-[.2em] text-brown/60">Years of<br />blessings</span></div></Reveal></div></section> }
+function About({ onOpenNotice }: { onOpenNotice: () => void }) {
+  return (
+    <section id="about" className="section-shell bg-cream text-brown">
+      <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:px-10">
+        <Reveal className="relative">
+          <div className="absolute -bottom-4 -right-4 h-full w-full border border-gold/60" />
+          <img
+            src="/svv-vinayagar.png"
+            alt="A devotional celebration gathering"
+            className="relative aspect-[4/5] w-full object-cover grayscale-[20%]"
+          />
+        </Reveal>
+        <Reveal delay={0.15}>
+          <p className="eyebrow text-gold-dark">Our story</p>
+          <h2 className="mt-5 max-w-xl font-display text-5xl uppercase leading-[.92] tracking-tight lg:text-7xl">
+            27 years of faith, tradition &amp; memories
+          </h2>
+          <div className="my-8 h-px w-20 bg-gold" />
+          <p className="max-w-lg text-lg leading-relaxed text-brown/70">
+            Sree Veera Vigneshwar has been a place where devotion becomes memory. For 27 years, our Vinayagar Chathurthi celebrations have brought families, friends and generations together in faith, joy and togetherness.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-6 sm:gap-8">
+            <div className="flex items-center gap-4">
+              <span className="font-display text-5xl text-gold-dark">27+</span>
+              <span className="font-mono text-[10px] uppercase leading-loose tracking-[.2em] text-brown/60">
+                Years of<br />blessings
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={onOpenNotice}
+              className="cursor-pointer group flex items-center gap-2.5 rounded-sm border border-gold-dark/40 bg-brown px-5 py-3.5 font-mono text-[10px] uppercase tracking-[.18em] text-gold font-bold transition-all hover:bg-gold hover:text-brown hover:-translate-y-0.5 shadow-md"
+            >
+              <Sparkles size={14} className="animate-pulse text-gold group-hover:text-brown" />
+              <span>SVV 2026 Notice</span>
+              <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </button>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
 
 function Services() { const items = [{ icon: Sparkles, title: "Celebrations", text: "Annual Vinayagar Chathurthi celebrations filled with devotion, happiness and togetherness." }, { icon: Camera, title: "Memories", text: "Preserving beautiful moments and unforgettable memories from our celebrations." }, { icon: "ॐ", title: "Pooja & Traditions", text: "Keeping our spiritual traditions and cultural values alive through every celebration." }]; return <section id="services" className="section-shell bg-brown text-cream"><div className="mx-auto max-w-7xl px-6 lg:px-10"><Reveal><p className="eyebrow text-gold">Services</p><h2 className="mt-5 max-w-2xl font-display text-5xl uppercase leading-[.92] tracking-tight lg:text-7xl">Celebrating tradition through every moment</h2></Reveal><div className="mt-16 grid gap-px border border-gold/20 bg-gold/20 md:grid-cols-3">{items.map(({ icon: Icon, title, text }, i) => <Reveal key={title} delay={i * .1} className="h-full"><article className="group h-full bg-brown p-8 transition-colors hover:bg-brown-light lg:p-10"><div className="mb-16 flex h-12 w-12 items-center justify-center border border-gold/50 text-gold transition-transform group-hover:-translate-y-1">{typeof Icon === "string" ? <span className="font-serif text-2xl">{Icon}</span> : <Icon size={22} />}</div><h3 className="font-display text-3xl uppercase text-cream">{title}</h3><p className="mt-4 leading-relaxed text-beige/65">{text}</p></article></Reveal>)}</div></div></section> }
 
@@ -165,8 +203,8 @@ export function SvvLanding() {
       <SmoothScroll isNoticeOpen={isNoticeOpen} />
       <Navigation onOpenNotice={() => setIsNoticeOpen(true)} />
       <main>
-        <Hero onOpenNotice={() => setIsNoticeOpen(true)} />
-        <About />
+        <Hero />
+        <About onOpenNotice={() => setIsNoticeOpen(true)} />
         <Services />
         <GallerySection />
         <MembersTeaserSection />

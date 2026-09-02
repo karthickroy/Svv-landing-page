@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Play, ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Lightbox } from './lightbox'
 import type { GalleryItem } from '@/types'
 
-const ITEMS_PER_PAGE = 9
+const ITEMS_PER_PAGE = 6
 
 // ─── Reveal animation wrapper (same as original svv-landing.tsx) ────────────
 function Reveal({
@@ -119,6 +119,52 @@ export function GallerySection() {
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const currentItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  // Responsive pagination items: Prev 1 2 3 ... Next format optimized for mobile
+  const paginationItems = useMemo(() => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => ({
+        type: 'page' as const,
+        page: i + 1,
+        hideOnMobile: false,
+      }))
+    }
+
+    // Near the beginning: 1, 2, 3, (4 on desktop), ..., totalPages
+    if (currentPage <= 3) {
+      return [
+        { type: 'page' as const, page: 1, hideOnMobile: false },
+        { type: 'page' as const, page: 2, hideOnMobile: false },
+        { type: 'page' as const, page: 3, hideOnMobile: false },
+        { type: 'page' as const, page: 4, hideOnMobile: true },
+        { type: 'ellipsis' as const, key: 'ellipsis-end', jumpTo: Math.min(totalPages, 5) },
+        { type: 'page' as const, page: totalPages, hideOnMobile: false },
+      ]
+    }
+
+    // Near the end: 1, ..., total-2, total-1, total
+    if (currentPage >= totalPages - 2) {
+      return [
+        { type: 'page' as const, page: 1, hideOnMobile: false },
+        { type: 'ellipsis' as const, key: 'ellipsis-start', jumpTo: Math.max(1, totalPages - 4) },
+        { type: 'page' as const, page: totalPages - 3, hideOnMobile: true },
+        { type: 'page' as const, page: totalPages - 2, hideOnMobile: false },
+        { type: 'page' as const, page: totalPages - 1, hideOnMobile: false },
+        { type: 'page' as const, page: totalPages, hideOnMobile: false },
+      ]
+    }
+
+    // In the middle: 1, ..., current, ..., total
+    return [
+      { type: 'page' as const, page: 1, hideOnMobile: false },
+      { type: 'ellipsis' as const, key: 'ellipsis-start', jumpTo: Math.max(1, currentPage - 2) },
+      { type: 'page' as const, page: currentPage - 1, hideOnMobile: true },
+      { type: 'page' as const, page: currentPage, hideOnMobile: false },
+      { type: 'page' as const, page: currentPage + 1, hideOnMobile: true },
+      { type: 'ellipsis' as const, key: 'ellipsis-end', jumpTo: Math.min(totalPages, currentPage + 2) },
+      { type: 'page' as const, page: totalPages, hideOnMobile: false },
+    ]
+  }, [currentPage, totalPages])
 
   const openLightbox = (index: number) => setLightboxIndex(index)
   const closeLightbox = () => setLightboxIndex(null)
@@ -244,25 +290,51 @@ export function GallerySection() {
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gold/15 pt-8 sm:flex-row">
-                <p className="font-mono text-xs uppercase tracking-widest text-beige/60">
-                  Showing <span className="font-bold text-gold">{startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, items.length)}</span> of <span className="font-bold text-cream">{items.length}</span> memories
+                <p className="font-mono text-xs uppercase tracking-widest text-beige/60 text-center sm:text-left">
+                  Showing{' '}
+                  <span className="font-bold text-gold">
+                    {startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, items.length)}
+                  </span>{' '}
+                  of <span className="font-bold text-cream">{items.length}</span> memories
                 </p>
 
-                <div className="flex items-center gap-2">
+                <nav aria-label="Gallery pagination" className="flex items-center gap-1 sm:gap-1.5 flex-nowrap">
                   <button
                     onClick={() => {
                       setCurrentPage((p) => Math.max(p - 1, 1))
                       document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
                     }}
                     disabled={currentPage === 1}
-                    className="flex items-center gap-1 border border-gold/30 bg-brown-light/40 px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream transition-colors hover:border-gold hover:bg-gold hover:text-brown disabled:opacity-40 disabled:hover:border-gold/30 disabled:hover:bg-brown-light/40 disabled:hover:text-cream"
+                    className="flex items-center gap-1 border border-gold/30 bg-brown-light/40 px-2.5 py-1.5 sm:px-3 sm:py-2 font-mono text-[10px] sm:text-xs uppercase tracking-wider text-cream transition-colors hover:border-gold hover:bg-gold hover:text-brown disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gold/30 disabled:hover:bg-brown-light/40 disabled:hover:text-cream shrink-0"
+                    aria-label="Previous page"
                   >
-                    <ChevronLeft size={14} /> Prev
+                    <ChevronLeft size={14} />
+                    <span>Prev</span>
                   </button>
 
-                  <div className="flex flex-wrap items-center gap-1.5 px-2">
-                    {Array.from({ length: totalPages }).map((_, idx) => {
-                      const pageNum = idx + 1
+                  <div className="flex items-center gap-1 sm:gap-1.5 px-0.5 sm:px-1">
+                    {paginationItems.map((item) => {
+                      if (item.type === 'ellipsis') {
+                        return (
+                          <button
+                            key={item.key}
+                            type="button"
+                            onClick={() => {
+                              setCurrentPage(item.jumpTo)
+                              document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
+                            }}
+                            title={`Jump to page ${item.jumpTo}`}
+                            className="flex h-8 w-6 sm:h-9 sm:w-8 items-center justify-center font-mono text-xs tracking-wider text-beige/50 hover:text-gold transition-colors select-none"
+                            aria-label={`Jump to page ${item.jumpTo}`}
+                          >
+                            ...
+                          </button>
+                        )
+                      }
+
+                      const pageNum = item.page
+                      const isActive = currentPage === pageNum
+
                       return (
                         <button
                           key={pageNum}
@@ -270,9 +342,13 @@ export function GallerySection() {
                             setCurrentPage(pageNum)
                             document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
                           }}
-                          className={`h-8 w-8 font-mono text-xs transition-colors ${
-                            currentPage === pageNum
-                              ? 'border border-gold bg-gold font-bold text-brown'
+                          aria-label={`Page ${pageNum}`}
+                          aria-current={isActive ? 'page' : undefined}
+                          className={`h-8 w-8 sm:h-9 sm:w-9 font-mono text-xs sm:text-sm transition-colors rounded-sm flex items-center justify-center ${
+                            item.hideOnMobile ? 'hidden sm:inline-flex' : 'inline-flex'
+                          } ${
+                            isActive
+                              ? 'border border-gold bg-gold font-bold text-brown shadow-sm'
                               : 'border border-gold/20 bg-brown-light/40 text-beige/70 hover:border-gold/60 hover:text-cream'
                           }`}
                         >
@@ -288,11 +364,13 @@ export function GallerySection() {
                       document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
                     }}
                     disabled={currentPage === totalPages}
-                    className="flex items-center gap-1 border border-gold/30 bg-brown-light/40 px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream transition-colors hover:border-gold hover:bg-gold hover:text-brown disabled:opacity-40 disabled:hover:border-gold/30 disabled:hover:bg-brown-light/40 disabled:hover:text-cream"
+                    className="flex items-center gap-1 border border-gold/30 bg-brown-light/40 px-2.5 py-1.5 sm:px-3 sm:py-2 font-mono text-[10px] sm:text-xs uppercase tracking-wider text-cream transition-colors hover:border-gold hover:bg-gold hover:text-brown disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gold/30 disabled:hover:bg-brown-light/40 disabled:hover:text-cream shrink-0"
+                    aria-label="Next page"
                   >
-                    Next <ChevronRight size={14} />
+                    <span>Next</span>
+                    <ChevronRight size={14} />
                   </button>
-                </div>
+                </nav>
               </div>
             )}
           </>
